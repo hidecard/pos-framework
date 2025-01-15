@@ -22,16 +22,30 @@ export class Cart {
         this.render();
     }
 
+    // Calculate the total amount
+    calculateTotal() {
+        return Object.values(this.cart).reduce((total, item) => {
+            return total + item.price * item.quantity;
+        }, 0);
+    }
+
     render() {
         const cartContainer = $("#cart-container");
         cartContainer.innerHTML = "";
 
         Object.entries(this.cart).forEach(([id, item]) => {
             const row = createElement("div", { class: "cart-item" }, [
-                `${item.name} - ${item.quantity} x ${item.price}`,
+                `${item.name} - ${item.quantity} x $${item.price}`,
                 createElement("button", { onClick: () => this.removeItem(id) }, ["Remove"]),
             ]);
             cartContainer.appendChild(row);
         });
+
+        // Show total amount
+        const totalAmount = this.calculateTotal();
+        const totalRow = createElement("div", { class: "cart-total" }, [
+            `Total: $${totalAmount.toFixed(2)}`,
+        ]);
+        cartContainer.appendChild(totalRow);
     }
 }
