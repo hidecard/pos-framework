@@ -16,13 +16,29 @@ export class Cart {
         this.render();
     }
 
+    increaseQuantity(productId) {
+        if (this.cart[productId]) {
+            this.cart[productId].quantity += 1;
+            saveToStorage("cart", this.cart);
+            this.render();
+        }
+    }
+
+    decreaseQuantity(productId) {
+        if (this.cart[productId] && this.cart[productId].quantity > 1) {
+            this.cart[productId].quantity -= 1;
+            saveToStorage("cart", this.cart);
+            this.render();
+        } else if (this.cart[productId] && this.cart[productId].quantity === 1) {
+            this.removeItem(productId);
+        }
+    }
+
     removeItem(productId) {
         delete this.cart[productId];
         saveToStorage("cart", this.cart);
         this.render();
     }
-
-    // Calculate the total amount
     calculateTotal() {
         return Object.values(this.cart).reduce((total, item) => {
             return total + item.price * item.quantity;
@@ -35,13 +51,23 @@ export class Cart {
 
         Object.entries(this.cart).forEach(([id, item]) => {
             const row = createElement("div", { class: "cart-item" }, [
-                `${item.name} - ${item.quantity} x $${item.price}`,
-                createElement("button", { onClick: () => this.removeItem(id) }, ["Remove"]),
+               
+                createElement("span", { class: "cart-item-name" }, [`${item.name} - $${item.price}`]),
+
+               
+                createElement("div", { class: "cart-actions" }, [
+                    createElement("button", { onClick: () => this.decreaseQuantity(id) }, ["-"]),
+                    createElement("span", { class: "cart-qty" }, [`${item.quantity}`]), // Display quantity
+                    createElement("button", { onClick: () => this.increaseQuantity(id) }, ["+"]),
+                ]),
+
+             
+                createElement("button", { onClick: () => this.removeItem(id), class: "cart-remove-btn" }, ["Remove"]),
             ]);
+
             cartContainer.appendChild(row);
         });
 
-        // Show total amount
         const totalAmount = this.calculateTotal();
         const totalRow = createElement("div", { class: "cart-total" }, [
             `Total: $${totalAmount.toFixed(2)}`,

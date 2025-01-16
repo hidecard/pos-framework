@@ -15,6 +15,7 @@ const cart = new Cart();
 const productList = new ProductList(products, cart);
 const navbar = new Navbar(cart);
 
+
 // Render components
 navbar.render();
 productList.render();

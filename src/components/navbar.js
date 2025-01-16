@@ -13,17 +13,22 @@ export class Navbar {
         logo.className = "navbar-logo";
         logo.innerText = "POS Framework";
 
-        const cartButton = document.createElement("button");
-        cartButton.className = "navbar-cart";
-        cartButton.innerText = `Cart (${Object.keys(this.cart.cart).length})`;
-        cartButton.addEventListener("click", () => {
+        this.cartButton = document.createElement("button");
+        this.cartButton.className = "navbar-cart";
+        this.cartButton.innerText = `Cart (${Object.keys(this.cart.cart).length})`;
+
+        this.cartButton.addEventListener("click", () => {
             const cartContainer = $("#cart-container");
             cartContainer.scrollIntoView({ behavior: "smooth" });
         });
 
         navbar.appendChild(logo);
-        navbar.appendChild(cartButton);
+        navbar.appendChild(this.cartButton);
 
         document.body.prepend(navbar);
+    }
+
+    updateCartCount() {
+        this.cartButton.innerText = `Cart (${Object.keys(this.cart.cart).length})`;
     }
 }
